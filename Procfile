@@ -1,1 +1,1 @@
-web: gunicorn --chdir inform_server __main__:app --log-level debug
+web: gunicorn --chdir inform_server app:app --log-level debug
