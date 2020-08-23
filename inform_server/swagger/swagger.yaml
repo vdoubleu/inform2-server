@@ -1,0 +1,188 @@
+openapi: 3.0.0
+info:
+  title: Inform API
+  description: This is the API for Inform, a next generation news outlet
+  contact:
+    email: victorwang2001@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+- url: https://virtserver.swaggerhub.com/VictorW/InformAPI/1.0.0
+  description: Inform API
+tags:
+- name: admins
+  description: Secured Admin-only calls
+paths:
+  /article:
+    get:
+      summary: gets articles
+      description: "By passing in the appropriate options, you can search for \nthe\
+        \ desired articles in the system\n"
+      operationId: get_articles
+      parameters:
+      - name: start
+        in: query
+        description: start at the nth position in terms of articles to return
+        required: false
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          format: int32
+      - name: maxAmount
+        in: query
+        description: the max amount of articles to return
+        required: false
+        style: form
+        explode: true
+        schema:
+          maximum: 100
+          minimum: 0
+          type: integer
+          format: int32
+      - name: author
+        in: query
+        description: returns only articles by the specified author
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: articles matching criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Article'
+                x-content-type: application/json
+        "400":
+          description: bad input
+      x-openapi-router-controller: inform_server.controllers.default_controller
+    post:
+      summary: post article
+      description: Adds an article to the system
+      operationId: post_articles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Article'
+      responses:
+        "201":
+          description: item created
+        "400":
+          description: invalid input, object invalid
+      x-openapi-router-controller: inform_server.controllers.default_controller
+  /opinion:
+    get:
+      summary: gets opinion
+      description: gets a users opinion on an article
+      operationId: get_opinion
+      parameters:
+      - name: articleId
+        in: query
+        description: article id
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int64
+      - name: user
+        in: query
+        description: user name
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: user's opnion on an article
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int32
+                x-content-type: application/json
+        "400":
+          description: bad input
+      x-openapi-router-controller: inform_server.controllers.default_controller
+    post:
+      summary: send opinion
+      description: Adds an opinion
+      operationId: post_opinion
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Opinion'
+      responses:
+        "201":
+          description: opinion updated
+        "400":
+          description: invalid input
+      x-openapi-router-controller: inform_server.controllers.default_controller
+components:
+  schemas:
+    Article:
+      required:
+      - author
+      - body
+      - category
+      - postTime
+      - title
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1234
+        author:
+          type: string
+          example: John Doe
+        postTime:
+          type: integer
+          format: int64
+          example: 123451235
+        category:
+          type: string
+          example: urget
+        title:
+          type: string
+          example: Local School Opens New Building
+        body:
+          type: string
+          example: Lorum Ipsum...
+      example:
+        postTime: 123451235
+        author: John Doe
+        id: 1234
+        category: urget
+        title: Local School Opens New Building
+        body: Lorum Ipsum...
+    Opinion:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: article id
+          format: int64
+          example: 1234
+        user:
+          type: string
+          description: name of user who gave the opinion
+          example: Mary Jane
+        value:
+          type: integer
+          description: the users opinion, 1 for positive, 0 for no opinion, -1 for
+            negative
+          format: int32
+          example: 12
+
