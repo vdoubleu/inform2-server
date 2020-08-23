@@ -1,1 +1,1 @@
-web: gunicorn inform_server.__main__:app
+web: gunicorn --chdir inform_server __main__:app
