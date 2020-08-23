@@ -1,1 +1,1 @@
-web: gunicorn --chdir inform_server __maine__.py:app
+web: gunicorn --chdir inform_server __main__.py:app
