@@ -10,14 +10,35 @@ import time
 
 from .score import score_post
 
+import os
+
 db = mysql.connector.connect(
-    host="mgs0iaapcj3p9srz.cbetxkdyhwsb.us-east-1.rds.amazonaws.com",
-    user="zh9ql9bzpkim7foo",
-    passwd="j1gwa06g7l7jcked",
-    database="mt0kqyyfyc0jaz07"
+    host=os.getenv("DBHOST"),
+    user=os.getenv("DBUSER"),
+    passwd=os.getenv("DBPW"),
+    database=os.getenv("DBNAME")
 )
 
 cursor = db.cursor()
+
+"""
+mysql setup command
+
+create table articles(
+	id int auto_increment,
+    title text,
+    body longtext,
+    category varchar(255),
+    author varchar(255),
+    time bigint,
+    totalLikes int,
+    totalDislikes int,
+    score bigint,
+
+    primary key(id)
+);
+"""
+
 
 def get_articles(start=None, max_amount=None, author=None):  # noqa: E501
     """gets articles
